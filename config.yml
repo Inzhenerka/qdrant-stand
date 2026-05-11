@@ -1,0 +1,11 @@
+rag:
+  corpora_dir: "corpus"
+  splitter:
+    chunk_size: 900
+    chunk_overlap: 180
+  embedder:
+    model: "text-embedding-3-small"
+    base_url: "https://llm.inzhenerka-cloud.com/"
+    dimensions: 1536
+    timeout: 30.0
+  store_location: "http://127.0.0.1:6333"

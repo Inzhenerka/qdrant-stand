@@ -1,0 +1,24 @@
+name: Deploy Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/**"
+      - "Dockerfile"
+      - "config.yml"
+      - "ingest.py"
+      - "pyproject.toml"
+      - "stand/**"
+      - "corpus/**"
+
+jobs:
+  deploy:
+    uses: Inzhenerka/ci-workflows/.github/workflows/deploy_image.yml@main
+    secrets:
+      coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
+      coolify_token: ${{ secrets.COOLIFY_TOKEN }}
+      build_args: |
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
