@@ -1,0 +1,82 @@
+name: Корпус курса повышения квалификации в IT
+description: |
+  Учебные материалы вводного курса повышения квалификации для учителей информатики.
+  Шесть модулей: Python, Git, Shell, Pandas, тестирование, SQL.
+
+documents:
+  - doc_id: python_intro
+    file: python-intro.md
+    title: Введение в Python
+    author: Inzhenerka.Tech
+    section: Python
+    content_scope: |
+      Двенадцать эпизодов: переменные и базовые типы, списки, циклы, условия,
+      функции, ошибки и исключения, чтение файлов, работа с путями (pathlib),
+      list/dict/set comprehension, модули и стандартная библиотека,
+      виртуальные окружения, аннотации типов. Сохранён сквозной сценарий
+      оригинала (анализ клинических данных пациентов с артритом, файлы
+      inflammation-NN.csv, функция fahr_to_celsius).
+
+  - doc_id: git_basics
+    file: git-basics.md
+    title: Основы Git
+    author: Inzhenerka.Tech
+    section: Git
+    content_scope: |
+      Адаптация эпизодов 1–9 (basics, setup, create, changes, history, ignore,
+      github, collab, conflict). Сохранён сквозной сценарий оригинала
+      (шеф Alfredo Linguini и его кулинарная книга `recipes/`,
+      файлы guacamole.md и hummus.md).
+
+  - doc_id: shell_basics
+    file: shell-basics.md
+    title: Основы Unix Shell
+    author: Inzhenerka.Tech
+    section: Shell
+    content_scope: |
+      Адаптация эпизодов 1–7 (intro, filedir, create, pipefilter, loops,
+      script, find). Сохранён сквозной сценарий оригинала (морской биолог
+      Nelle Nemo и её 1520 образцов с North Pacific Gyre, папка
+      shell-lesson-data, скрипты middle.sh и sorted.sh, PDB-файлы алканов).
+
+  - doc_id: pandas_intro
+    file: pandas-intro.md
+    title: Анализ данных с pandas
+    author: Inzhenerka.Tech
+    section: Анализ данных
+    content_scope: |
+      Одиннадцать эпизодов на основе SWC-эпизодов 6–9: библиотеки и почему pandas,
+      чтение CSV в DataFrame, DataFrame и Series, доступ через iloc/loc,
+      фильтрация булевыми масками, создание/изменение столбцов, группировка
+      и агрегация, сортировка и работа с пропусками, объединение таблиц,
+      запись данных, базовая визуализация. Плюс блок «типичные ошибки начинающих».
+      Сохранён сквозной сценарий оригинала (датасет Gapminder с ВВП на душу
+      населения по странам, файлы gapminder_gdp_<регион>.csv, переменные
+      data_oceania и data_americas).
+
+  - doc_id: testing_basics
+    file: testing-basics.md
+    title: Основы автоматического тестирования с pytest
+    author: Inzhenerka.Tech
+    section: Тестирование
+    content_scope: |
+      Девять эпизодов на основе SWC-эпизодов 1–6 и 10: зачем нужны тесты,
+      assertions, exceptions, unit-тесты, pytest как стандартный инструмент,
+      edge cases и corner cases, fixtures. Дополнительно — покрытие кода
+      (pytest-cov) и обзор методологий TDD/test-after/bug-first. Сохранён
+      сквозной пример (тестирование функции `mean` для списка чисел
+      и расчёт чисел Фибоначчи как иллюстрация edge cases).
+
+  - doc_id: sql_basics
+    file: sql-basics.md
+    title: Основы SQL и реляционных БД
+    author: Inzhenerka.Tech
+    section: Базы данных
+    content_scope: |
+      Двенадцать эпизодов на основе SWC-эпизодов 1–9: SELECT/FROM, ORDER BY/DISTINCT,
+      WHERE с фильтрами, вычисления в SELECT, NULL, агрегация, GROUP BY/HAVING,
+      JOIN с типами, INSERT/UPDATE/DELETE, CREATE TABLE с ограничениями.
+      Дополнительно — индексы и транзакции, работа с SQL из Python через sqlite3
+      с предупреждением про SQL-инъекции. Сохранён сквозной сценарий оригинала
+      (антарктические научные экспедиции, таблицы Person, Site, Visited, Survey;
+      измерения rad/sal/temp; исследователи dyer, lake, roe, pb).
