@@ -1,6 +1,6 @@
-name: Корпус курса повышения квалификации в IT
+name: Корпус вводного IT-курса
 description: |
-  Учебные материалы вводного курса повышения квалификации для учителей информатики.
+  Учебные материалы для студентов вводного IT-курса.
   Шесть модулей: Python, Git, Shell, Pandas, тестирование, SQL.
 
 documents:
@@ -10,12 +10,11 @@ documents:
     author: Inzhenerka.Tech
     section: Python
     content_scope: |
-      Двенадцать эпизодов: переменные и базовые типы, списки, циклы, условия,
-      функции, ошибки и исключения, чтение файлов, работа с путями (pathlib),
-      list/dict/set comprehension, модули и стандартная библиотека,
-      виртуальные окружения, аннотации типов. Сохранён сквозной сценарий
-      оригинала (анализ клинических данных пациентов с артритом, файлы
-      inflammation-NN.csv, функция fahr_to_celsius).
+      Введение в Python с нуля: переменные и базовые типы, коллекции,
+      циклы, условия, функции, исключения, работа с файлами и путями,
+      comprehension, модули, виртуальные окружения, аннотации типов.
+      Сквозной сценарий — анализ клинических данных воспаления по
+      пациентам (inflammation-NN.csv).
 
   - doc_id: git_basics
     file: git-basics.md
@@ -23,10 +22,11 @@ documents:
     author: Inzhenerka.Tech
     section: Git
     content_scope: |
-      Адаптация эпизодов 1–9 (basics, setup, create, changes, history, ignore,
-      github, collab, conflict). Сохранён сквозной сценарий оригинала
-      (шеф Alfredo Linguini и его кулинарная книга `recipes/`,
-      файлы guacamole.md и hummus.md).
+      Введение в Git и GitHub с нуля: настройка, локальный репозиторий,
+      цикл add/commit/diff, история и restore, .gitignore, удалённый
+      репозиторий по SSH, совместная работа, разрешение конфликтов
+      слияния. Сквозной сценарий — кулинарная книга шефа Alfredo
+      Linguini в папке recipes/.
 
   - doc_id: shell_basics
     file: shell-basics.md
@@ -34,10 +34,11 @@ documents:
     author: Inzhenerka.Tech
     section: Shell
     content_scope: |
-      Адаптация эпизодов 1–7 (intro, filedir, create, pipefilter, loops,
-      script, find). Сохранён сквозной сценарий оригинала (морской биолог
-      Nelle Nemo и её 1520 образцов с North Pacific Gyre, папка
-      shell-lesson-data, скрипты middle.sh и sorted.sh, PDB-файлы алканов).
+      Введение в Unix Shell (Bash) с нуля: навигация по файловой
+      системе, работа с файлами и папками, перенаправление и пайпы,
+      циклы for, shell-скрипты, поиск через grep и find. Сквозной
+      сценарий — морской биолог Nelle Nemo и её 1520 образцов
+      с North Pacific Gyre.
 
   - doc_id: pandas_intro
     file: pandas-intro.md
@@ -45,14 +46,11 @@ documents:
     author: Inzhenerka.Tech
     section: Анализ данных
     content_scope: |
-      Одиннадцать эпизодов на основе SWC-эпизодов 6–9: библиотеки и почему pandas,
-      чтение CSV в DataFrame, DataFrame и Series, доступ через iloc/loc,
-      фильтрация булевыми масками, создание/изменение столбцов, группировка
-      и агрегация, сортировка и работа с пропусками, объединение таблиц,
-      запись данных, базовая визуализация. Плюс блок «типичные ошибки начинающих».
-      Сохранён сквозной сценарий оригинала (датасет Gapminder с ВВП на душу
-      населения по странам, файлы gapminder_gdp_<регион>.csv, переменные
-      data_oceania и data_americas).
+      Введение в pandas для анализа табличных данных: чтение CSV,
+      доступ через iloc/loc, фильтрация булевыми масками, группировка
+      и агрегация, работа с пропусками, объединение таблиц, базовая
+      визуализация. Сквозной сценарий — датасет Gapminder с ВВП на
+      душу населения по странам и годам (gapminder_gdp_<регион>.csv).
 
   - doc_id: testing_basics
     file: testing-basics.md
@@ -60,12 +58,12 @@ documents:
     author: Inzhenerka.Tech
     section: Тестирование
     content_scope: |
-      Девять эпизодов на основе SWC-эпизодов 1–6 и 10: зачем нужны тесты,
-      assertions, exceptions, unit-тесты, pytest как стандартный инструмент,
-      edge cases и corner cases, fixtures. Дополнительно — покрытие кода
-      (pytest-cov) и обзор методологий TDD/test-after/bug-first. Сохранён
-      сквозной пример (тестирование функции `mean` для списка чисел
-      и расчёт чисел Фибоначчи как иллюстрация edge cases).
+      Введение в автоматическое тестирование с pytest: assert
+      и исключения, unit-тесты в стиле Arrange-Act-Assert, pytest
+      и его возможности (parametrize, raises, approx), edge/corner
+      cases, фикстуры и conftest.py, покрытие через pytest-cov,
+      методологии TDD и bug-first. Сквозной пример — функция mean
+      и числа Фибоначчи.
 
   - doc_id: sql_basics
     file: sql-basics.md
@@ -73,10 +71,9 @@ documents:
     author: Inzhenerka.Tech
     section: Базы данных
     content_scope: |
-      Двенадцать эпизодов на основе SWC-эпизодов 1–9: SELECT/FROM, ORDER BY/DISTINCT,
-      WHERE с фильтрами, вычисления в SELECT, NULL, агрегация, GROUP BY/HAVING,
-      JOIN с типами, INSERT/UPDATE/DELETE, CREATE TABLE с ограничениями.
-      Дополнительно — индексы и транзакции, работа с SQL из Python через sqlite3
-      с предупреждением про SQL-инъекции. Сохранён сквозной сценарий оригинала
-      (антарктические научные экспедиции, таблицы Person, Site, Visited, Survey;
-      измерения rad/sal/temp; исследователи dyer, lake, roe, pb).
+      Введение в SQL и реляционные БД на примере SQLite: SELECT/WHERE/
+      ORDER BY, NULL, агрегация и GROUP BY/HAVING, JOIN, INSERT/UPDATE/
+      DELETE, CREATE TABLE с ограничениями, индексы и транзакции,
+      работа из Python через sqlite3 (включая параметризацию против
+      SQL-инъекций). Сквозной сценарий — антарктические научные
+      экспедиции (таблицы Person, Site, Visited, Survey).

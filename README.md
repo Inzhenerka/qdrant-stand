@@ -1,6 +1,6 @@
 # qdrant-stand
 
-Учебный стенд Qdrant с предзапечённой read-only коллекцией для практик по RAG.
+Учебный стенд Qdrant с предзапечёнными read-only коллекциями для практик по RAG.
 
 Векторизация корпусов происходит на этапе `docker build`. Финальный образ — обычный `qdrant/qdrant` с уже залитыми коллекциями внутри. После запуска контейнер слушает порт **6333** и сразу раздаёт коллекции. Студентам выдаётся `read_only_api_key`, поэтому запись им заблокирована.
 
@@ -8,11 +8,12 @@
 
 Каждая подпапка в `corpus/` — отдельный корпус и отдельная коллекция Qdrant. Имя коллекции = имя подпапки. Сейчас в стенде:
 
-| Имя коллекции | Источник | Тексты |
+| Имя коллекции | Источник | Содержание |
 |---|---|---|
-| `ural_corpus` | `corpus/ural_corpus/` | Уральский краеведческий корпус (3 документа из edu-librarian) |
+| `ural_corpus` | `corpus/ural_corpus/` | Уральский краеведческий корпус (3 документа конца XIX — начала XX века) |
+| `it_corpus` | `corpus/it_corpus/` | Вводный IT-курс: Python, Git, Shell, Pandas, тестирование, SQL |
 
-Чтобы добавить новый корпус — создать `corpus/<новое_имя>/` с `manifest.yml` и `.txt` файлами, пересобрать образ.
+Чтобы добавить новый корпус — создайте `corpus/<новое_имя>/` с `manifest.yml` и текстовыми файлами, пересоберите образ.
 
 ## Параметры всех коллекций
 
@@ -20,14 +21,14 @@
 |---|---|
 | Размерность векторов | `1536` |
 | Distance | `Cosine` |
-| Модель эмбеддингов (для query) | `text-embedding-3-small` |
+| Модель эмбеддингов | `text-embedding-3-small` |
 | `base_url` эмбеддера | `https://llm.inzhenerka-cloud.com/` |
 
-Студенты обязаны эмбедить запросы той же моделью и через тот же `base_url`, иначе векторы окажутся в другом пространстве и поиск даст мусор.
+Студенты должны эмбедить запросы той же моделью и через тот же `base_url`, иначе векторы окажутся в другом пространстве и поиск даст мусор.
 
 ## Сборка
 
-Нужен `OPENAI_API_KEY` (для прохождения через `https://llm.inzhenerka-cloud.com/`):
+Для сборки нужен `OPENAI_API_KEY` (используется один раз при индексации, в финальный образ не попадает):
 
 ```powershell
 $env:OPENAI_API_KEY = "sk-..."
@@ -49,8 +50,8 @@ embedder = OpenAIEmbeddings(
     dimensions=1536,
 )
 
-query_vec = embedder.embed_query("кто такие Демидовы?")
-hits = client.search(collection_name="ural_corpus", query_vector=query_vec, limit=5)
+query_vec = embedder.embed_query("что такое git rebase и чем отличается от merge")
+hits = client.search(collection_name="it_corpus", query_vector=query_vec, limit=5)
 for h in hits:
     print(h.score, h.payload["title"], h.payload["chunk_id"])
 ```
@@ -60,14 +61,14 @@ for h in hits:
 | Ключ | Кому | Права |
 |---|---|---|
 | `student` (env `QDRANT__SERVICE__READ_ONLY_API_KEY`) | Студенты | `search`, `scroll`, `retrieve`, `GET /collections/*` |
-| `admin-rotate-me` (env `QDRANT__SERVICE__API_KEY`) | Преподаватели | Все операции |
+| `admin-rotate-me` (env `QDRANT__SERVICE__API_KEY`) | Админ | Все операции |
 
 Оба ключа задаются как **runtime env-переменные** контейнера — это переопределяет дефолты из `ENV` в [Dockerfile](Dockerfile) без пересборки.
 
-**Coolify** (рекомендуется для прода): Application → Environment Variables:
+**В проде** мастер-ключ нужно заменить на длинный случайный (`openssl rand -hex 32`) и задать через переменные окружения сервиса:
 
 ```
-QDRANT__SERVICE__API_KEY=<длинный случайный, например openssl rand -hex 32>
+QDRANT__SERVICE__API_KEY=<длинный случайный>
 QDRANT__SERVICE__READ_ONLY_API_KEY=student
 ```
 
@@ -81,63 +82,52 @@ docker compose up -d
 
 Без переопределения локально работает дефолт `admin-rotate-me` — он зашит в Dockerfile только чтобы стенд запускался при `docker run` без env, **не используйте его в проде**.
 
-## CI/CD: GitHub Actions → GHCR → Coolify
+## CI/CD
 
-В [.github/workflows/deploy-image.yml](.github/workflows/deploy-image.yml) лежит workflow, который на push в `main` (или вручную через workflow_dispatch) вызывает reusable `Inzhenerka/ci-workflows/.github/workflows/deploy_image.yml@main`:
+В [.github/workflows/deploy-image.yml](.github/workflows/deploy-image.yml) лежит workflow, который на push в `main` (или вручную через workflow_dispatch):
 
 1. Билдит образ через Buildx с кешем в `type=gha`.
 2. Пушит в GHCR: `ghcr.io/<owner>/<repo>:latest` + теги по ветке и sha.
-3. Дёргает Coolify webhook — Coolify pull'ит новый образ и поднимает.
+3. Триггерит деплой через webhook.
 
-`OPENAI_API_KEY` передаётся в reusable через secret `build_args` — значение маскируется в логах workflow.
+`OPENAI_API_KEY` передаётся в build как secret — значение маскируется в логах workflow и не сохраняется в финальном слое образа.
 
-Нужны GitHub Secrets в репозитории:
+Требуемые GitHub Secrets:
 
-| Secret | Что |
+| Secret | Назначение |
 |---|---|
-| `OPENAI_API_KEY` | Прокидывается как `--build-arg` в builder stage. В финальный образ не попадает. |
-| `COOLIFY_WEBHOOK` | URL вида `https://coolify.../api/v1/deploy?uuid=...` |
-| `COOLIFY_TOKEN` | API-токен Coolify (Bearer) |
-
-## Настройка в Coolify
-
-Тип приложения — **Docker Image** (не Dockerfile-from-git): Coolify будет тянуть готовый образ из GHCR после успешного build в GHA. Это быстрее и не требует доступа к `OPENAI_API_KEY` на стороне Coolify.
-
-1. Создать приложение типа Docker Image, источник — `ghcr.io/<owner>/<repo>:latest`.
-2. Если репозиторий private — настроить registry credentials в Coolify (PAT с правом `read:packages`).
-3. В Environment задать `QDRANT__SERVICE__API_KEY` случайным значением. `QDRANT__SERVICE__READ_ONLY_API_KEY` оставить как `student` или задать своё.
-4. Опубликовать порт `6333`.
-5. Включить webhook в настройках приложения, скопировать webhook URL и token в GitHub Secrets.
-
-`OPENAI_API_KEY` в финальном слое не сохраняется (ARG объявлен только в builder stage и не наследуется в `FROM qdrant/qdrant`), `docker history` его не покажет.
+| `OPENAI_API_KEY` | Прокидывается как `--build-arg` в builder stage |
+| `COOLIFY_WEBHOOK` | URL webhook'а деплоя |
+| `COOLIFY_TOKEN` | Bearer-токен для webhook'а |
 
 ## Структура проекта
 
 ```
 qdrant-stand/
-├── Dockerfile              # multi-stage: builder поднимает qdrant и заливает коллекцию
+├── Dockerfile              # multi-stage: builder поднимает qdrant и наливает коллекции
 ├── docker-compose.yml      # локальная сборка/запуск
 ├── config.yml              # RAG-конфиг для ingest
 ├── pyproject.toml          # python-зависимости (uv)
 ├── ingest.py               # точка входа индексации
 ├── corpus/                 # каждая подпапка = отдельная коллекция
-│   └── ural_corpus/        # manifest.yml + .txt файлы (один корпус)
+│   ├── ural_corpus/        # уральский краеведческий корпус
+│   └── it_corpus/          # вводный IT-курс
 └── stand/                  # минимальный пакет: чанкование, эмбеддер, vector-store
     ├── config.py
     └── rag/
 ```
 
-Корпус и логика подготовки скопированы из [edu-librarian](../edu-librarian) (без FastAPI / agent / retriever — только pipeline до Qdrant).
+Логика подготовки — pipeline до Qdrant: загрузка манифеста, чанкование через `RecursiveCharacterTextSplitter`, эмбеддинг через OpenAI API, заливка в коллекцию.
 
 ## Локальная проверка
 
 ```powershell
-# Коллекция раздаётся студентам
+# Коллекции раздаются студентам
 curl -H "api-key: student" http://localhost:6333/collections
-curl -H "api-key: student" http://localhost:6333/collections/ural_corpus
+curl -H "api-key: student" http://localhost:6333/collections/it_corpus
 
 # Запись заблокирована
-curl -X DELETE -H "api-key: student" http://localhost:6333/collections/ural_corpus
+curl -X DELETE -H "api-key: student" http://localhost:6333/collections/it_corpus
 # -> 403 Forbidden
 
 # Без ключа
