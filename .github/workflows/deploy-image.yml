@@ -1,4 +1,4 @@
-name: Deploy Docker image
+name: 🚀 Deploy Docker image
 
 on:
   workflow_dispatch:
@@ -14,11 +14,71 @@ on:
       - "stand/**"
       - "corpus/**"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   deploy:
-    uses: Inzhenerka/ci-workflows/.github/workflows/deploy_image.yml@main
-    secrets:
-      coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
-      coolify_token: ${{ secrets.COOLIFY_TOKEN }}
-      build_args: |
-        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+    name: 🚀 Build, publish and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Prepare image name
+        id: image
+        shell: bash
+        run: |
+          echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: 🛠️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Log in to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🧾 Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🏗️ Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: 🚀 Deploy to Coolify
+        env:
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: |
+          status=$(curl -s -o response.txt -w '%{http_code}' \
+            --request GET "$COOLIFY_WEBHOOK" \
+            --header "Authorization: Bearer $COOLIFY_TOKEN")
+          echo "Response status: $status"
+          cat response.txt || true
+          echo
+          if [[ "$status" -lt 200 || "$status" -ge 300 ]]; then
+            echo "❌ Coolify deploy webhook failed"
+            exit 1
+          fi
+          echo "✅ Coolify deploy triggered"
