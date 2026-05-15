@@ -8,6 +8,7 @@ documents:
     file: python-intro.md
     title: Введение в Python
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/python-intro.md
     section: Python
     content_scope: |
       Введение в Python с нуля: переменные и базовые типы, коллекции,
@@ -20,6 +21,7 @@ documents:
     file: git-basics.md
     title: Основы Git
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/git-basics.md
     section: Git
     content_scope: |
       Введение в Git и GitHub с нуля: настройка, локальный репозиторий,
@@ -32,6 +34,7 @@ documents:
     file: shell-basics.md
     title: Основы Unix Shell
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/shell-basics.md
     section: Shell
     content_scope: |
       Введение в Unix Shell (Bash) с нуля: навигация по файловой
@@ -44,6 +47,7 @@ documents:
     file: pandas-intro.md
     title: Анализ данных с pandas
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/pandas-intro.md
     section: Анализ данных
     content_scope: |
       Введение в pandas для анализа табличных данных: чтение CSV,
@@ -56,6 +60,7 @@ documents:
     file: testing-basics.md
     title: Основы автоматического тестирования с pytest
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/testing-basics.md
     section: Тестирование
     content_scope: |
       Введение в автоматическое тестирование с pytest: assert
@@ -69,6 +74,7 @@ documents:
     file: sql-basics.md
     title: Основы SQL и реляционных БД
     author: Inzhenerka.Tech
+    source_url: https://github.com/Inzhenerka/qdrant-stand/blob/main/corpus/it_corpus/sql-basics.md
     section: Базы данных
     content_scope: |
       Введение в SQL и реляционные БД на примере SQLite: SELECT/WHERE/
