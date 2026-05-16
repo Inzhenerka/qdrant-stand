@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   deploy:
+    name: 🚀 Deploy
     uses: Inzhenerka/PumpRoom-CI/.github/workflows/deploy_coolify.yml@main
     secrets:
       coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
