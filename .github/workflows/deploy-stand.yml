@@ -1,0 +1,29 @@
+name: 🚀 Deploy Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/**"
+      - "Dockerfile"
+      - "config.yml"
+      - "ingest.py"
+      - "pyproject.toml"
+      - "stand/**"
+      - "corpus/**"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    uses: Inzhenerka/PumpRoom-CI/.github/workflows/deploy_coolify.yml@main
+    with:
+      environment: production
+      url: https://pumproom-api.inzhenerka-cloud.com/
+    secrets:
+      coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
+      coolify_token: ${{ secrets.COOLIFY_TOKEN }}
