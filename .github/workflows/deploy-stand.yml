@@ -22,9 +22,8 @@ permissions:
 jobs:
   deploy:
     uses: Inzhenerka/PumpRoom-CI/.github/workflows/deploy_coolify.yml@main
-    with:
-      build_args: |
-        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
     secrets:
       coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
       coolify_token: ${{ secrets.COOLIFY_TOKEN }}
+      build_args: |
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
