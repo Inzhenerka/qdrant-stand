@@ -21,9 +21,6 @@ permissions:
 jobs:
   deploy:
     uses: Inzhenerka/PumpRoom-CI/.github/workflows/deploy_coolify.yml@main
-    with:
-      environment: production
-      url: https://pumproom-api.inzhenerka-cloud.com/
     secrets:
       coolify_webhook: ${{ secrets.COOLIFY_WEBHOOK }}
       coolify_token: ${{ secrets.COOLIFY_TOKEN }}
